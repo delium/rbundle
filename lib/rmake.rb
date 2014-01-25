@@ -23,11 +23,13 @@ class PackageManager
     packages_on_system = installed_packages
     @packages_to_install.each do |package|
       if(packages_on_system[package['name']].nil? || ((!package['version'].nil?) && packages_on_system[package['name']] < package['version']))
-        puts "Comparision: #{packages_on_system[package['name']].nil? || ((!package['version'].nil?) && packages_on_system[package['name']] < package['version'])}"
         install_package(package)
         packages_on_system = installed_packages
         raise("Could not install package #{package['name']}, version #{package['version']}") if (packages_on_system[package['name']].nil? || packages_on_system[package['version']].to_s < package['version'])
+      else
+        puts "Using package: #{package['name']}:#{packages_on_system[package['name']]}"
       end
+
     end
   end
 
@@ -44,6 +46,7 @@ class PackageManager
   end
 
   def install_package(package_name)
+    puts "Installing package: #{package_name['name']}"
     R.eval("install.packages('#{package_name['name']}', dependencies=T,  repos='http://cran.us.r-project.org')")
   end
 
