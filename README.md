@@ -49,8 +49,7 @@ Create a file called Rmake in the following structure:
     ]
 }
 ```
-For the folder containing the Rmake file run
-$ rmake
+For the folder containing the Rmake file run rmake
 
 You are done, you should not see all packages being downloaded and installed on your machine.
 
