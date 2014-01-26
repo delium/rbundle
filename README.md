@@ -49,7 +49,7 @@ Create a file called Rmake in the following structure:
     ]
 }
 ```
-For the folder containing the Rmake file run rmake
+From the folder containing the Rmake file run rmake
 
 You are done, you should now see all packages(which are not present or having older versions) being downloaded and installed on your machine.
 
