@@ -1,6 +1,6 @@
 # Rmake
 
-TODO: Write a gem description
+A bundler for R capable of installing packages from cran and git
 
 ## Installation
 
@@ -17,8 +17,46 @@ Or install it yourself as:
     $ gem install rmake
 
 ## Usage
+Create a file called Rmake in the following structure:
 
-TODO: Write usage instructions here
+```
+{
+    "r_version": {
+        "major": 3,
+        "minor": 0.1
+    },
+    "packages": [
+        {
+            "name": "data.table",
+            "version": "1.8.10"
+        },{
+  			    "name": "RJSONIO"
+        },{
+  			    "name": "RCurl"
+        },{
+  			    "name": "Rook"
+        },{
+  			    "name": "multicore"
+        },{
+  			    "name": "R.cache"
+        },{
+            "name": "rmocks",
+            "git":{
+                "url": "https://github.com/jpsimonroy/rmocks.git"
+            }
+        }
+
+    ]
+}
+```
+For the folder containing the Rmake file run
+$ rmake
+
+You are done, you should not see all packages being downloaded and installed on your machine.
+
+## Known Issues
+1. You cannot downgrade packages or even install packages which are older in version. If a new system is being bootstrapped with rmake, you would be assured to get packages with version greater than or equal to the version specified in your Rmake file.
+2. The base R installation cannot be automated. If unmatching R version is found, Rmake would stall requiring you to match the R version manually and then continue with package installation.
 
 ## Contributing
 
