@@ -39,7 +39,7 @@ class RPackageManager
   end
 
   def validate_r_version
-    return if installed_r_version['major'] == @expected_r_version['major'].to_s && installed_r_version['minor'] == @expected_r_version['minor'].to_s
+    return if installed_r_version['major'] == @expected_r_version['major'].to_s && installed_r_version['minor'] >= @expected_r_version['minor'].to_s
     raise("Please install R version #{@expected_r_version['major']}.#{@expected_r_version['minor']} manually before continuing")
   end
 
