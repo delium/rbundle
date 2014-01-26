@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby
 
 require 'rmake'
-Bundler.bundle
+RBundler.bundle

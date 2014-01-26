@@ -4,18 +4,18 @@ require 'json'
 
 R.quit
 
-class Bundler
+class RBundler
   def self.bundle
     print "Reading system requirements from Rmake\n"
     system_requirements = JSON.parse(File.read(Dir.pwd + '/Rmake'))
     r_version = system_requirements['r_version']
     packages = system_requirements['packages']
-    PackageManager.new([{'name' => 'devtools'}], r_version).resolve
-    PackageManager.new(packages, r_version).resolve
+    RPackageManager.new([{'name' => 'devtools'}], r_version).resolve
+    RPackageManager.new(packages, r_version).resolve
   end
 end
 
-class PackageManager
+class RPackageManager
 
   def initialize (packages, r_version)
     @packages_to_install = packages
