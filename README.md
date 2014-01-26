@@ -51,7 +51,7 @@ Create a file called Rmake in the following structure:
 ```
 For the folder containing the Rmake file run rmake
 
-You are done, you should not see all packages being downloaded and installed on your machine.
+You are done, you should now see all packages(which are not present or having older versions) being downloaded and installed on your machine.
 
 ## Known Issues
 1. You cannot downgrade packages or even install packages which are older in version. If a new system is being bootstrapped with rmake, you would be assured to get packages with version greater than or equal to the version specified in your Rmake file.
