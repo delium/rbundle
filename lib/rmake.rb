@@ -21,6 +21,7 @@ class RBundler
 end
 
 class RPackageManager
+  SOURCES = %w(git local url)
 
   def initialize (packages, r_version)
     @declared_dependencies = packages
@@ -88,8 +89,18 @@ class RPackageManager
 
   def install_package(package_name)
     puts "Installing package: #{package_name['name']}"
-    install_from_cran(package_name) and return unless package_name['git']
-    install_from_git(package_name) and return if package_name['git']
+    source = (package_name.keys & SOURCES).first
+    case source
+      when 'git'
+        install_from_git package_name
+      when 'local'
+        install_local package_name
+      when 'url'
+        install_url package_name
+      else
+        install_from_cran package_name
+    end
+
   end
 
   def install_dependencies
@@ -105,6 +116,14 @@ class RPackageManager
 
   def install_from_cran(package_name)
     package_name['version'] ? r_evaluator.eval("library(devtools); install_version('#{package_name['name']}', '#{package_name['version']}')") : r_evaluator.eval("install.packages('#{package_name['name']}'")
+  end
+
+  def install_local(package_name)
+    r_evaluator.eval "library(devtools); install_local('#{package_name['local']}')"
+  end
+
+  def install_url(package_name)
+    r_evaluator.eval "library(devtools); install_url('#{package_name['url']}')"
   end
 
   def install_from_git(package_name)

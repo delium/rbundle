@@ -3,7 +3,7 @@
 require 'rmake'
 require 'ap'
 
-action = ARGV.nil? ? 'install': ARGV[0]
+action = ARGV.empty? ? 'install': ARGV[0]
 case action
   when 'install'
     RBundler.bundle
