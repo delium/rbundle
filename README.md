@@ -17,21 +17,51 @@ Or install it yourself as:
     $ gem install rmake
 
 ## Usage
-# Defining Dependencies
+### Defining Dependencies
 
 Create a file named Rmake like below(YAML format)
+```yaml
+---
+  r_version: 
+    major: 3
+    minor: 0.1
+  packages: 
+    - 
+      name: "data.table"
+      version: "1.8.10"
+    -
+      name: "local-package"
+      local: "<abs or relative path to package>"
+    - 
+      name: "RJSONIO"
+    - 
+      name: "RCurl"
+    - 
+      name: "Rook"
+    - 
+      name: "multicore"
+    - 
+      name: "R.cache"
+    - 
+      name: "rmocks"
+      git: 
+        url: "https://github.com/jpsimonroy/rmocks.git"
+```
 
 From the folder containing the Rmake file run rbundle
 
-```
-    $ rbundle install
-        or
+```bash
     $ rbundle
+```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(or)
+
+```bash
+    $ rbundle install
 ```
 
 You are done, you should now see all packages(which are not present or having older versions) being downloaded and installed on your machine.
 
-# Visualizing a dependency tree
+### Visualizing a dependency tree
 
 ```
     $ rbundle deptree
@@ -39,6 +69,7 @@ You are done, you should now see all packages(which are not present or having ol
 
 This produces a dependency tree as below
 
+```ruby
 {
     "data.table" => [
         [ 0] "methods",
@@ -74,6 +105,7 @@ This produces a dependency tree as below
     ],
         "rmocks" => []
 }
+```
 
 
 ## Known Issues / Behaviour
