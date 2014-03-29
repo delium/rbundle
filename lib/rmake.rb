@@ -12,6 +12,12 @@ class RBundler
     RPackageManager.new([{'name' => 'devtools'}], r_version).resolve
     RPackageManager.new(packages, r_version).install_dependencies.resolve
   end
+
+  def self.deptree
+    system_requirements = YAML.load(File.open(Dir.pwd + '/Rmake'))
+    packages = system_requirements['packages']
+    RPackageManager.new(packages, nil).dep_tree packages
+  end
 end
 
 class RPackageManager
