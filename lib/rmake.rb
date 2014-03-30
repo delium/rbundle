@@ -127,10 +127,18 @@ class RPackageManager
   end
 
   def install_from_git(package_name)
-    r_evaluator.eval 'library(devtools)'
-    r_evaluator.eval "install_git('#{package_name['git']['url']}')"
-    puts 'Installation from git complete'
+    command = git_command package_name
+    r_evaluator.eval "library(devtools); #{command}"
   end
+
+  def git_handle package_name
+    "#{package_name['git']['author']}/#{package_name['git']['repo']}"
+  end
+
+  def git_command package_name
+    package_name['version'].nil? ? "install_github('#{git_handle(package_name)}')" : "install_github('#{git_handle(package_name)}', ref='#{package_name['version']}')"
+  end
+
 
   def installed_packages
     installed_packages=r_evaluator.pull 'as.character(data.frame(installed.packages(lib.loc = NULL, priority = NULL, noCache = FALSE, fields = NULL,subarch = .Platform$r_arch))$Package)'
