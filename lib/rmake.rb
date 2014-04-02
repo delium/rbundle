@@ -115,7 +115,7 @@ class RPackageManager
   end
 
   def install_from_cran(package_name)
-    package_name['version'] ? r_evaluator.eval("library(devtools); install_version('#{package_name['name']}', '#{package_name['version']}')") : r_evaluator.eval("install.packages('#{package_name['name']}'")
+    package_name['version'] ? r_evaluator.eval("library(devtools); install_version('#{package_name['name']}', '#{package_name['version']}')") : r_evaluator.eval("install.packages('#{package_name['name']}')")
   end
 
   def install_local(package_name)
