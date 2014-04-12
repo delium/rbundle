@@ -8,9 +8,11 @@ class RBundler
     puts "Reading system requirements from Rmake\n"
     system_requirements = YAML.load(File.open(Dir.pwd + '/Rmake'))
     r_version = system_requirements['r_version']
-    packages = system_requirements['packages']
+    bundle_env = ENV['R_ENV'].nil? ? "test" : ENV['R_ENV'].downcase
+    packages = system_requirements[bundle_env]
+    raise "Unknown environment: #{bundle_env.upcase}" if packages.nil? or packages.empty?
     RPackageManager.new([{'name' => 'devtools'}], r_version).resolve
-    RPackageManager.new(packages, r_version).install_dependencies.resolve
+    RPackageManager.new(packages.flatten, r_version).install_dependencies.resolve
   end
 
   def self.deptree
