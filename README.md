@@ -24,14 +24,15 @@ Create a file named Rmake like below(YAML format)
 ---
   r_version: 
     major: 3
-    minor: 0.1
-  packages: 
+    minor: 0.2
+  
+  app_deps: &app_deps
     - 
       name: "data.table"
-      version: "1.8.10"
+      version: "1.9.2"
     -
-      name: "local-package"
-      local: "<abs or relative path to package>"
+      name: "local-pack"
+      local: "<path to package>"
     - 
       name: "RJSONIO"
     - 
@@ -43,9 +44,21 @@ Create a file named Rmake like below(YAML format)
     - 
       name: "R.cache"
     - 
+      name: "functional"
+    -
+      name: "plyr"
+    
+  test:      
+    - *app_deps
+    - 
       name: "rmocks"
+      version: "1.1"
       git: 
-        url: "https://github.com/jpsimonroy/rmocks.git"
+        author: "jpsimonroy"
+        repo: "rmocks"
+  <env2>:
+    - *app_deps
+
 ```
 
 From the folder containing the Rmake file run rbundle
