@@ -64,7 +64,7 @@ class RPackageManager
     packages_on_system = installed_packages
     @declared_dependencies.each do |package|
       if (source(package) == 'local' || install_required?(package, packages_on_system))
-        remove_package(package)
+        remove_package(package) unless match_version_verbatim?(package['name'], packages_on_system)
         install_package(package)
         packages_on_system = installed_packages
         raise("Could not install package #{package['name']}, version #{package['version']}") if (install_required?(package, packages_on_system))
@@ -76,7 +76,8 @@ class RPackageManager
   end
 
   def remove_package(package_name)
-    puts "Installing package: #{package_name}"
+    package_name=package_name['name']
+    puts "Removing package: #{package_name}"
     r_evaluator.eval "remove.packages('#{package_name}')"
   end
 
