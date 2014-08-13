@@ -63,8 +63,8 @@ class RPackageManager
     puts 'Indexing Current System State'
     packages_on_system = installed_packages
     @declared_dependencies.each do |package|
-      if (install_required?(package, packages_on_system))
-        remove_package(package) unless match_version_verbatim?(package['name'], packages_on_system)
+      if (source(package) == 'local' || install_required?(package, packages_on_system))
+        remove_package(package)
         install_package(package)
         packages_on_system = installed_packages
         raise("Could not install package #{package['name']}, version #{package['version']}") if (install_required?(package, packages_on_system))
@@ -102,8 +102,7 @@ class RPackageManager
 
   def install_package(package_name)
     puts "Installing package: #{package_name['name']}"
-    source = (package_name.keys & SOURCES).first
-    case source
+    case source(package_name)
       when 'git'
         install_from_git package_name
       when 'local'
@@ -114,6 +113,10 @@ class RPackageManager
         install_from_cran package_name
     end
 
+  end
+
+  def source(package_name)
+    (package_name.keys & SOURCES).first
   end
 
   def install_dependencies
