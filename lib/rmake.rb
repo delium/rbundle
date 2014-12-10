@@ -11,7 +11,7 @@ class RBundler
     bundle_env = runtime_env
     packages = system_requirements[bundle_env]
     validate(bundle_env, packages)
-    RPackageManager.new([{'name' => 'devtools'}], r_version).resolve
+    RPackageManager.new([{'name' => 'devtools'},{'name' => 'RCurl'}], r_version).resolve
     RPackageManager.new(packages.flatten, r_version).install_dependencies.resolve
   end
 
