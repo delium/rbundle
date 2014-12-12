@@ -11,7 +11,7 @@ class RBundler
     bundle_env = runtime_env
     packages = system_requirements[bundle_env]
     validate(bundle_env, packages)
-    RPackageManager.new([{'name' => 'devtools', 'version' => '1.6.1'},{'name' => 'RCurl'}], r_version).resolve
+    RPackageManager.new([{'name' => 'devtools'},{'name' => 'RCurl'}], r_version).resolve
     RPackageManager.new(packages.flatten, r_version).install_dependencies.resolve
   end
 
@@ -63,8 +63,8 @@ class RPackageManager
     puts 'Indexing Current System State'
     packages_on_system = installed_packages
     @declared_dependencies.each do |package|
-      if (source(package) == 'local' || install_required?(package, packages_on_system))
-        remove_package(package) unless match_version_verbatim?(package['name'], packages_on_system)
+      if (source(package) == 'local' || !match_version_verbatim?(package['name'], packages_on_system))
+        remove_package(package)
         install_package(package)
         packages_on_system = installed_packages
         raise("Could not install package #{package['name']}, version #{package['version']}") if (install_required?(package, packages_on_system))
@@ -132,7 +132,16 @@ class RPackageManager
   end
 
   def install_from_cran(package_name)
-    package_name['version'] ? r_evaluator.eval("library(devtools); install_version('#{package_name['name']}', '#{package_name['version']}')") : r_evaluator.eval("install.packages('#{package_name['name']}')")
+    package_name['version'] ? install_specific_version(package_name) : install_latest_version(package_name)
+  end
+
+  def install_latest_version(package_name)
+    r_evaluator.eval("install.packages('#{package_name['name']}')")
+    r_evaluator.eval("update.packages(oldPkgs='#{package_name['name']}')")
+  end
+
+  def install_specific_version(package_name)
+    r_evaluator.eval("library(devtools); install_version('#{package_name['name']}', '#{package_name['version']}')")
   end
 
   def install_local(package_name)
