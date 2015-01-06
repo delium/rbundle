@@ -63,8 +63,8 @@ class RPackageManager
     puts 'Indexing Current System State'
     packages_on_system = installed_packages
     @declared_dependencies.each do |package|
-      if (source(package) == 'local' || !match_version_verbatim?(package['name'], packages_on_system))
-        remove_package(package)
+      if (source(package) == 'local' || !match_version_verbatim?(package, packages_on_system))
+        remove_package(package) if packages_on_system.key?(package['name'])
         install_package(package)
         packages_on_system = installed_packages
         raise("Could not install package #{package['name']}, version #{package['version']}") if (install_required?(package, packages_on_system))
@@ -86,7 +86,7 @@ class RPackageManager
   end
 
   def match_version_verbatim?(package, packages_on_system)
-    ((!package['version'].nil?) && packages_on_system[package['name']] != package['version'])
+    packages_on_system.key?(package['name']) && (package['version'].nil? || packages_on_system[package['name']] == package['version'])
   end
 
   def validate_r_version
