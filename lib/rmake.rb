@@ -25,6 +25,7 @@ class RBundler
     command = %{
       R --vanilla --slave -e "if (! ('devtools' %in% installed.packages()[,'Package'])) install.packages(pkgs='devtools', repos=c('https://cloud.r-project.org'))"
     }
+    puts "Executing #{command}"
     `#{command}`
     command_inspector($?.exitstatus)
   end
@@ -32,8 +33,9 @@ class RBundler
   def self.install(dependency)
     puts "Installing #{dependency['package']}"
     command = %{
-      R --slave --vanilla -e "options(warn=2); library(devtools); if ((!'#{dependency['package']}' %in% installed.packages()[,'Package']) || packageVersion('#{dependency['package']}') < '#{dependency['version']}') install_version('#{dependency['package']}', version='#{dependency['version']}', repos=c('https://cloud.r-project.org'))"
+     R --slave --vanilla -e "options(warn=2); library(devtools); if ((!'#{dependency['package']}' %in% installed.packages()[,'Package']) || packageVersion('#{dependency['package']}') < '#{dependency['version']}') install_version('#{dependency['package']}', version='#{dependency['version']}', repos=c('https://cloud.r-project.org'))"
     }
+    puts "Executing #{command}"
     `#{command}`
     command_inspector($?.exitstatus)
   end
