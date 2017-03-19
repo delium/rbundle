@@ -1,15 +1,5 @@
 #!/usr/bin/env ruby
-
 require 'rmake'
-require 'ap'
 
 action = ARGV.empty? ? 'install': ARGV[0]
-case action
-  when 'install'
-    RBundler.bundle
-  when 'deptree'
-    ap RBundler.deptree
-  else
-    puts 'Usage: rbundle install|deptree'
-end
-
+RBundler.bundle
