@@ -1,3 +1,3 @@
-module Rmake
+module Rbundle
   VERSION = '0.2.0'
 end

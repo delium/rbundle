@@ -1,12 +1,12 @@
 # Rmake
 
-A bundler for R capable of installing packages from cran, git and local
+A bundler for R capable of installing packages from cran
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'rmake'
+    gem 'rbundle'
 
 And then execute:
 
@@ -14,51 +14,19 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install rmake
+    $ gem install rbundle
 
 ## Usage
 ### Defining Dependencies
 
-Create a file named Rmake like below(YAML format)
+Create a file named dependencies.txt like below(YAML format)
 ```yaml
 ---
-  r_version: 
-    major: 3
-    minor: 0.2
-  
-  app_deps: &app_deps
-    - 
-      name: "data.table"
-      version: "1.9.2"
-    -
-      name: "local-pack"
-      local: "<path to package>"
-    - 
-      name: "RJSONIO"
-    - 
-      name: "RCurl"
-    - 
-      name: "Rook"
-    - 
-      name: "multicore"
-    - 
-      name: "R.cache"
-    - 
-      name: "functional"
-    -
-      name: "plyr"
-    
-  test:      
-    - *app_deps
-    - 
-      name: "rmocks"
-      version: "1.1"
-      git: 
-        author: "jpsimonroy"
-        repo: "rmocks"
-  <env2>:
-    - *app_deps
+- package: 'data.table'
+  version: '1.9.6'
 
+- package: 'ISOweek'
+  version: '0.6-2'
 ```
 
 From the folder containing the Rmake file run rbundle
@@ -66,64 +34,11 @@ From the folder containing the Rmake file run rbundle
 ```bash
     $ rbundle
 ```
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(or)
-
-```bash
-    $ rbundle install
-```
 
 You are done, you should now see all packages(which are not present or having older versions) being downloaded and installed on your machine.
 
-### Visualizing a dependency tree
-
-```
-    $ rbundle deptree
-```
-
-This produces a dependency tree as below
-
-```ruby
-{
-    "data.table" => [
-        [ 0] "methods",
-        [ 1] "reshape2",
-        [ 2] "plyr",
-        [ 3] "stringr",
-        [ 4] "lattice",
-        [ 5] "grid",
-        [ 6] "grDevices",
-        [ 7] "graphics",
-        [ 8] "stats",
-        [ 9] "utils",
-        [10] "Rcpp"
-    ],
-       "RJSONIO" => "methods",
-         "RCurl" => [
-        [0] "methods",
-        [1] "bitops"
-    ],
-          "Rook" => [
-        [0] "utils",
-        [1] "tools",
-        [2] "methods",
-        [3] "brew"
-    ],
-     "multicore" => [],
-       "R.cache" => [
-        [0] "utils",
-        [1] "R.methodsS3",
-        [2] "R.oo",
-        [3] "R.utils",
-        [4] "methods"
-    ],
-        "rmocks" => []
-}
-```
-
-
 ## Known Issues / Behaviour
-1. No dependencies are assumed if the system cannot be queried for dependencies or there is not network. Dependencies are only resolved for packages available in cran.
-2. The base R installation cannot be automated. If unmatching R version is found, Rmake would stall requiring you to match the R version manually and then continue with package installation.
+The base R installation cannot be automated. If unmatching R version is found, Rmake would stall requiring you to match the R version manually and then continue with package installation.
 
 ## Contributing
 

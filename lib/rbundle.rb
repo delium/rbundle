@@ -1,4 +1,4 @@
-require "rmake/version"
+require "rbundle/version"
 require "yaml"
 
 class RBundler

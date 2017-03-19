@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'rmake/version'
+require 'rbundle/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'rmake'
-  spec.version       = Rmake::VERSION
+  spec.name          = 'rbundle'
+  spec.version       = Rbundle::VERSION
   spec.authors       = ['Simon']
   spec.email         = ['simon@delium.co']
   spec.description   = %q{A bundler for R}

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require 'rmake'
+require 'rbundle'
 
 action = ARGV.empty? ? 'install': ARGV[0]
 RBundler.bundle
