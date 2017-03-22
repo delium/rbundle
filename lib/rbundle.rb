@@ -1,6 +1,21 @@
 require "rbundle/version"
 require "yaml"
 
+def with_retries(retries = 3, back_off = 60, args=[],  &block)
+  counter = 1
+  until counter > retries do
+    begin
+      block.call(*args)
+      break
+    rescue Exception => e
+      raise e if counter == retries
+      counter = counter + 1
+      p "Sleeping #{counter * back_off} seconds"
+      sleep counter * back_off;
+    end
+  end
+end
+
 class RBundler
   def self.bundle
     install_installer
@@ -14,29 +29,31 @@ class RBundler
   end
 
   def self.command_inspector(exit_code)
-    if(exit_code != 0) 
-      puts("Installation failed")
-      exit(exit_code)
-    end
+    throw 'Installation failed.' if exit_code != 0
   end
 
   def self.install_installer
-    puts "Installing devtools"
-    command = %{
-      R --vanilla --slave -e "if (! ('devtools' %in% installed.packages()[,'Package'])) install.packages(pkgs='devtools', repos=c('https://cloud.r-project.org'))"
-    }
-    puts "Executing #{command}"
-    `#{command}`
-    command_inspector($?.exitstatus)
+    with_retries do
+      puts "Installing devtools"
+      command = %{
+        R --vanilla --slave -e "if (! ('devtools' %in% installed.packages()[,'Package'])) install.packages(pkgs='devtools', repos=c('https://cloud.r-project.org'))"
+      }
+      puts "Executing #{command}"
+      `#{command}`
+      `R --slave --vanilla -e "library(devtools)"`
+      command_inspector($?.exitstatus)
+    end
   end
 
   def self.install(dependency)
-    puts "Installing #{dependency['package']}"
-    command = %{
-     R --slave --vanilla -e "options(warn=2); library(devtools); if ((!'#{dependency['package']}' %in% installed.packages()[,'Package']) || packageVersion('#{dependency['package']}') < '#{dependency['version']}') install_version('#{dependency['package']}', version='#{dependency['version']}', repos=c('https://cloud.r-project.org'))"
-    }
-    puts "Executing #{command}"
-    `#{command}`
-    command_inspector($?.exitstatus)
+    with_retries(args = [dependency]) do |dependency|
+      puts "Installing #{dependency['package']}"
+      command = %{
+       R --slave --vanilla -e "options(warn=2); library(devtools); if ((!'#{dependency['package']}' %in% installed.packages()[,'Package']) || packageVersion('#{dependency['package']}') < '#{dependency['version']}') install_version('#{dependency['package']}', version='#{dependency['version']}', repos=c('https://cloud.r-project.org'))"
+      }
+      puts "Executing #{command}"
+      `#{command}`
+      command_inspector($?.exitstatus)
+    end
   end
 end
