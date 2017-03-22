@@ -1,7 +1,7 @@
 require "rbundle/version"
 require "yaml"
 
-def with_retries(retries = 3, back_off = 60, args=[],  &block)
+def with_retries(retries = 3, back_off = 60, args,  &block)
   counter = 1
   until counter > retries do
     begin
@@ -33,7 +33,7 @@ class RBundler
   end
 
   def self.install_installer
-    with_retries do
+    with_retries(args=[]) do
       puts "Installing devtools"
       command = %{
         R --vanilla --slave -e "if (! ('devtools' %in% installed.packages()[,'Package'])) install.packages(pkgs='devtools', repos=c('https://cloud.r-project.org'))"
