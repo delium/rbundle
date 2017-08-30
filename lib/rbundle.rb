@@ -1,5 +1,6 @@
 require "rbundle/version"
 require "yaml"
+require "parallel"
 
 def with_retries(retries = 3, back_off = 60, args,  &block)
   counter = 1
@@ -19,7 +20,7 @@ end
 class RBundler
   def self.bundle
     install_installer
-    self.read_requirements.each {|d| install(d)}
+    Parallel.map(self.read_requirements, in_processes: 5) {|d| install(d)}
   end
 
   def self.read_requirements
@@ -49,7 +50,7 @@ class RBundler
     with_retries(args = [dependency]) do |dependency|
       puts "Installing #{dependency['package']}"
       command = %{
-       R --slave --vanilla -e "options(warn=2); library(devtools); if ((!'#{dependency['package']}' %in% installed.packages()[,'Package']) || packageVersion('#{dependency['package']}') < '#{dependency['version']}') install_version('#{dependency['package']}', version='#{dependency['version']}', repos=c('https://cloud.r-project.org'), quiet=F)"
+       R --slave --vanilla -e "options(warn=2); options(install.lock=F); library(devtools); if ((!'#{dependency['package']}' %in% installed.packages()[,'Package']) || packageVersion('#{dependency['package']}') < '#{dependency['version']}') install_version('#{dependency['package']}', version='#{dependency['version']}', repos=c('https://cloud.r-project.org'), quiet=F)"
       }
       puts "Executing #{command}"
       `#{command}`
