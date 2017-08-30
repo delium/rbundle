@@ -17,9 +17,9 @@ def with_retries(retries = 3, back_off = 60, args,  &block)
 end
 
 class RBundler
-  def self.bundle
-    install_installer
-    self.read_requirements.each {|d| install(d)}
+  def self.bundle(parallels)
+    install_installer(parallels)
+    self.read_requirements.each {|d| install(d, parallels)}
   end
 
   def self.read_requirements
@@ -32,11 +32,11 @@ class RBundler
     throw 'Installation failed.' if exit_code != 0
   end
 
-  def self.install_installer
-    with_retries(args=[]) do
+  def self.install_installer(parallels)
+    with_retries(args=[parallels]) do |parallels|
       puts "Installing devtools"
       command = %{
-        R --vanilla --slave -e "if (! ('devtools' %in% installed.packages()[,'Package'])) install.packages(pkgs='devtools', repos=c('https://cloud.r-project.org'), quiet=F)"
+        R --vanilla --slave -e "options("Ncpus=#{parallels}L"); if (! ('devtools' %in% installed.packages()[,'Package'])) install.packages(pkgs='devtools', repos=c('https://cloud.r-project.org'), quiet=F)"
       }
       puts "Executing #{command}"
       `#{command}`
@@ -45,11 +45,11 @@ class RBundler
     end
   end
 
-  def self.install(dependency)
-    with_retries(args = [dependency]) do |dependency|
+  def self.install(dependency, parallels)
+    with_retries(args = [dependency, parallels]) do |dependency, parallels|
       puts "Installing #{dependency['package']}"
       command = %{
-       R --slave --vanilla -e "options(warn=2); library(devtools); if ((!'#{dependency['package']}' %in% installed.packages()[,'Package']) || packageVersion('#{dependency['package']}') < '#{dependency['version']}') install_version('#{dependency['package']}', version='#{dependency['version']}', repos=c('https://cloud.r-project.org'), quiet=F)"
+       R --slave --vanilla -e "options(warn=2); options("Ncpus=#{parallels}L"); library(devtools); if ((!'#{dependency['package']}' %in% installed.packages()[,'Package']) || packageVersion('#{dependency['package']}') < '#{dependency['version']}') install_version('#{dependency['package']}', version='#{dependency['version']}', repos=c('https://cloud.r-project.org'), quiet=F)"
       }
       puts "Executing #{command}"
       `#{command}`

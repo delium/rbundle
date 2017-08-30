@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 require 'rbundle'
 
-action = ARGV.empty? ? 'install': ARGV[0]
-RBundler.bundle
+parallels = ARGV.empty? ? 5 : ARGV[0]
+RBundler.bundle parallels
