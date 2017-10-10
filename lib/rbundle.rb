@@ -36,7 +36,7 @@ class RBundler
     with_retries(args=[parallels]) do |parallels|
       puts "Installing devtools"
       command = %{
-        R --vanilla --slave -e "options("Ncpus=#{parallels}L"); if (! ('devtools' %in% installed.packages()[,'Package'])) install.packages(pkgs='devtools', repos=c('https://cloud.r-project.org'), quiet=F)"
+        R --vanilla --slave -e "options("Ncpus=#{parallels}L"); if (! ('devtools' %in% installed.packages()[,'Package'])) install.packages(pkgs='devtools', repos=c('https://cloud.r-project.org'), INSTALL_opts=c('--no-docs'), quiet=F)"
       }
       puts "Executing #{command}"
       `#{command}`
@@ -49,7 +49,7 @@ class RBundler
     with_retries(args = [dependency, parallels]) do |dependency, parallels|
       puts "Installing #{dependency['package']}"
       command = %{
-       R --slave --vanilla -e "options(warn=2); options("Ncpus=#{parallels}L"); library(devtools); if ((!'#{dependency['package']}' %in% installed.packages()[,'Package']) || packageVersion('#{dependency['package']}') < '#{dependency['version']}') install_version('#{dependency['package']}', version='#{dependency['version']}', repos=c('https://cloud.r-project.org'), quiet=F)"
+       R --slave --vanilla -e "options(warn=2); options("Ncpus=#{parallels}L"); library(devtools); if ((!'#{dependency['package']}' %in% installed.packages()[,'Package']) || packageVersion('#{dependency['package']}') < '#{dependency['version']}') install_version('#{dependency['package']}', version='#{dependency['version']}', repos=c('https://cloud.r-project.org'), INSTALL_opts=c('--no-docs'), quiet=F)"
       }
       puts "Executing #{command}"
       `#{command}`
