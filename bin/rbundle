@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require 'rbundle'
 
+$stdout.sync = true
 parallels = ARGV.empty? ? 5 : ARGV[0]
 RBundler.bundle parallels
