@@ -17,6 +17,11 @@ def with_retries(retries = 3, back_off = 60, args,  &block)
 end
 
 class RBundler
+  # Pin devtools to a known-good version. Newer/unbounded devtools releases
+  # change how packages are installed and break install_version against the
+  # latest R, so we freeze the installer to this version.
+  DEVTOOLS_VERSION = '2.4.5'
+
   def self.bundle(parallels)
     install_installer(parallels)
     self.read_requirements.each {|d| install(d, parallels)}
@@ -34,9 +39,9 @@ class RBundler
 
   def self.install_installer(parallels)
     with_retries(args=[parallels]) do |parallels|
-      puts "Installing devtools"
+      puts "Installing devtools #{DEVTOOLS_VERSION}"
       command = %{
-        R --vanilla --slave -e "options("Ncpus=#{parallels}L"); if (! ('devtools' %in% installed.packages()[,'Package'])) install.packages(pkgs='devtools', repos=c('https://cloud.r-project.org'), INSTALL_opts=c('--no-docs'), quiet=F)"
+        R --vanilla --slave -e "options("Ncpus=#{parallels}L"); if (! ('remotes' %in% installed.packages()[,'Package'])) install.packages(pkgs='remotes', repos=c('https://cloud.r-project.org'), INSTALL_opts=c('--no-docs'), quiet=F); if ((! ('devtools' %in% installed.packages()[,'Package'])) || packageVersion('devtools') != '#{DEVTOOLS_VERSION}') remotes::install_version('devtools', version='#{DEVTOOLS_VERSION}', repos=c('https://cloud.r-project.org'), INSTALL_opts=c('--no-docs'), upgrade='never', quiet=F)"
       }
       puts "Executing #{command}"
       `#{command}`
